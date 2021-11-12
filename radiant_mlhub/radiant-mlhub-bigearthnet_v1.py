@@ -122,14 +122,18 @@ def download(item, asset_key, output_dir='./data'):
     print(f'Downloaded to {output_path.resolve()}')
 
 
+# ======================================================
+# Select an Item
+# ======================================================
+
 collection_id = 'bigearthnet_v1_labels'
 
 items = get_items(
     collection_id,
-    classes=['Coniferous forest', 'Rice fields'],
+    # classes=['Coniferous forest', 'Rice fields'],
     cloud_and_shadow=False,
     seasonal_snow=False,
-    max_items=1
+    max_items=10
 )
 first_item = next(items)
 
@@ -140,4 +144,55 @@ print('Assets\n------')
 for asset_key, asset in first_item['assets'].items():
     print(f'Key: {asset_key}\nTitle: {asset["title"]}\n')
 
+# ======================================================
+# Download labels
+# ======================================================
 download(first_item, 'labels')
+
+
+
+# ======================================================
+# Download labels
+# ======================================================
+items_pattern = re.compile(r'^/mlhub/v1/collections/(\w+)/items/(\w+)$')
+
+# ======================================================
+# Download Source Imagery
+# ======================================================
+
+# Summarize the source links
+print('Sources\n------------')
+for link in first_item['links']:
+    if link['rel'] == 'source':
+        # Get the item ID (last part of the link path)
+        item_path = urllib.parse.urlsplit(link['href']).path
+        item_collection, item_id = items_pattern.fullmatch(item_path).groups()
+        item = client.get_collection_item(item_collection, item_id)
+        
+        item_id = item["id"]
+        platform = item["properties"].get('platform', 'N/A')
+        n_assets = len(item['assets'])
+        print(f'ID: {item_id}\nPlatform: {platform}\nNumber of Assets: {n_assets}\n')
+        
+        # Only summarize the first 4 bands...
+        for asset_key, asset in it.islice(item['assets'].items(), 4):
+            media_type = asset['type']
+            band_names = [band['common_name'] for band in asset['eo:bands']]
+            print(f'Key: {asset_key}\nAsset Type: {media_type}\nBands: {band_names}\n')
+            
+        print('...')
+
+source_item = client.get_collection_item('bigearthnet_v1_source', 'bigearthnet_v1_source_S2B_MSIL2A_20170709T094029_30_50')
+
+rgb_bands = ['B02', 'B03', 'B04']
+
+for asset_key in rgb_bands:
+    download(source_item, asset_key)
+
+# ======================================================
+# Download All Assets
+# ======================================================
+output_dir = Path('./data')
+
+print(f'Downloading {collection_id} archive...')
+# client.download_archive(collection_id, output_dir=output_dir)
