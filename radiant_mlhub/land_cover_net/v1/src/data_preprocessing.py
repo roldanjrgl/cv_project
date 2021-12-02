@@ -18,7 +18,7 @@ def convert_images():
     # refence_based_on: https://github.com/pavlo-seimskyi/semantic-segmentation-satellite-imagery/blob/main/download_data.ipynb
     rgbnl = {}
     # for loc in Path('data/ref_landcovernet_v1_labels_38PKT_25/source').ls(): 
-    for img in Path('data/ref_landcovernet_v1_labels_38PKT_29/source').ls(): 
+    for img in Path('data/ref_landcovernet_v1_labels_38PKT_28/source').ls(): 
         print(img)
         if re.search('.*0101_B04_10m.tif', str(img)) : rgbnl['red'] = img 
         if re.search('.*0101_B03_10m.tif', str(img)) : rgbnl['green'] = img
