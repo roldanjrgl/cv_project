@@ -190,16 +190,17 @@ for item in items:
 # ==============================================
 # Filtering on Land Cover Type
 # ==============================================
-# items = get_items(
-#     collection_id,
-#     classes=['Woody Vegetation'],
-#     max_items=1,
-# )
+items = get_items(
+    collection_id,
+    classes=['Woody Vegetation'],
+    max_items=1,
+)
 
-# for item in items:
-#     download_labels_and_source(item, assets=['labels', 'B02', 'B03', 'B04'])
+for item in items:
+    download_labels_and_source(item, assets=['labels', 'B02', 'B03', 'B04'])
 
 # ==============================================
 # Download All Assets
 # ==============================================
-# client.download_archive(collection_id, output_dir='./data')
+client.download_archive(collection_id, output_dir='./data')
+

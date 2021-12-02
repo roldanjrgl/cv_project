@@ -1,40 +1,5 @@
-import os
-os.environ['MLHUB_API_KEY'] = '688769cc570be590e2cf107b8418eab0aba12eb23a0a29069b06b870d6c38049'
-
-import urllib.parse
 import re
-from pathlib import Path
-import itertools as it
-from functools import partial
-from concurrent.futures import ThreadPoolExecutor
 
-from tqdm.notebook import tqdm
-from radiant_mlhub import client, get_session
-
-
-# ==============================================
-# Listing Collection Properties
-# ==============================================
-collection_id = 'ref_landcovernet_v1_labels'
-collection = client.get_collection(collection_id)
-
-print(f'Description: {collection["description"]}')
-print(f'License: {collection["license"]}')
-print(f'DOI: {collection["sci:doi"]}')
-print(f'Citation: {collection["sci:citation"]}')
-
-# ==============================================
-# Finding Possible Land Cover Labels
-# ==============================================
-items = client.list_collection_items(collection_id, limit=1)
-
-first_item = next(items)
-
-label_classes = first_item['properties']['label:classes']
-for label_class in label_classes:
-    print(f'Classes for {label_class["name"]}')
-    for c in sorted(label_class['classes']):
-        print(f'- {c}')
 
 # ==============================================
 # Downloading Assets
@@ -175,31 +140,3 @@ def download_labels_and_source(item, assets=None, output_dir='./data'):
             for _ in executor.map(lambda triplet: download(*triplet), download_args):
                 pbar.update(1)
     
-
-# ==============================================
-# Download Assets for 1 Item
-# ==============================================
-items = get_items(
-    collection_id,
-    max_items=1
-)
-
-for item in items:
-    download_labels_and_source(item, assets=['labels', 'B02', 'B03', 'B04'])
-
-# ==============================================
-# Filtering on Land Cover Type
-# ==============================================
-# items = get_items(
-#     collection_id,
-#     classes=['Woody Vegetation'],
-#     max_items=1,
-# )
-
-# for item in items:
-#     download_labels_and_source(item, assets=['labels', 'B02', 'B03', 'B04'])
-
-# ==============================================
-# Download All Assets
-# ==============================================
-# client.download_archive(collection_id, output_dir='./data')
