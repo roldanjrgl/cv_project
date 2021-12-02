@@ -1,4 +1,11 @@
 import re
+import urllib.parse
+from pathlib import Path
+import itertools as it
+from functools import partial
+from concurrent.futures import ThreadPoolExecutor
+from tqdm.notebook import tqdm
+from radiant_mlhub import client, get_session
 
 
 # ==============================================
@@ -140,3 +147,7 @@ def download_labels_and_source(item, assets=None, output_dir='./data'):
             for _ in executor.map(lambda triplet: download(*triplet), download_args):
                 pbar.update(1)
     
+
+def download_rgb_labels_and_source(items):
+    for item in items:
+        download_labels_and_source(item, assets=['labels', 'B02', 'B03', 'B04'])
