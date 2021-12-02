@@ -22,7 +22,7 @@ def print_collection_properties(collection_id):
     print(f'Citation: {collection["sci:citation"]}')
 
 
-def print_land_cover_labels():
+def print_land_cover_labels(collection_id):
     items = client.list_collection_items(collection_id, limit=1)
 
     first_item = next(items)
