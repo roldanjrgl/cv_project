@@ -1,6 +1,7 @@
 import numpy
 from fastai.vision.all import *
 import rasterio as rio
+import os 
 
 def get_source_rgb(path_dict):
     # reference_got_from:  https://github.com/pavlo-seimskyi/semantic-segmentation-satellite-imagery/blob/main/download_data.ipynb
@@ -52,9 +53,13 @@ def convert_label_to_png(path_to_label):
     # rgb = get_label(rgbnl)
 
     # filename = 'label_testing'
-    label_png_folder = 'labels_png_folder'
+    label_png_folder = 'data_labels_png'
     
-    plt.imsave(label_png_folder +  path_to_label[-36:] + '.png', label.astype('uint8'))
+    if os.path.isdir(label_png_folder) == False:
+        os.mkdir(label_png_folder)
+    
+    # plt.imsave(label_png_folder +  path_to_label[-36:] + '.png', label.astype('uint8'))
+    plt.imsave(label_png_folder +  path_to_label[-36:] + '.png', label)
 
 
 def convert_all_labels_to_png(all_labels_path):
