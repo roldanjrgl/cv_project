@@ -110,8 +110,11 @@ def classify_bands_for_one_image_chip(image_chip_path):
     
     return bands_for_image_chip_source_day
 
-def convert_all_source_days_one_for_image_chip(bands_info):
-    pass
+def convert_all_source_days_for_image_chip(bands_for_image_chip_source_day):
+
+    for source_day, bands  in bands_for_image_chip_source_day.items():
+        print(source_day)
+        print(bands)
 
 
 def convert_data_to_png(data_path):
@@ -128,7 +131,7 @@ def convert_data_to_png(data_path):
         # convert_source_to_png(sample_path/f'source', data_png_path / sample_name / )
 
         bands_for_image_chip_source_day = classify_bands_for_one_image_chip(image_chip_path)
-        convert_all_source_days_one_for_image_chip(bands_for_image_chip_source_day)
+        convert_all_source_days_for_image_chip(bands_for_image_chip_source_day)
 
 
     print('END OF FUNCT')
