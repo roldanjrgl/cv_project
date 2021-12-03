@@ -40,13 +40,25 @@ def get_label(path_dict):
     return channel_normalized 
 
 
-def convert_label():
+def convert_label_to_png(path_to_label):
     # refence_based_on: https://github.com/pavlo-seimskyi/semantic-segmentation-satellite-imagery/blob/main/download_data.ipynb
-    rgbnl = {}
-    for img in Path('data/ref_landcovernet_v1_labels_38PKT_29/labels').ls(): 
+    label_img = {}
+    # for img in Path('data/ref_landcovernet_v1_labels_38PKT_29/labels').ls(): 
+    for img in Path(path_to_label).ls(): 
         print(img)
-        if re.search('.*LC_10m.tif', str(img)) : rgbnl['band'] = img 
-    rgb = get_label(rgbnl)
-    filename = 'label_testing'
-    plt.imsave(filename + '.png', rgb.astype('uint8'))
+        if re.search('labels.tif', str(img)) : label_img['band'] = img 
 
+    label = rio.open(label_img['band']).read(1)
+    # rgb = get_label(rgbnl)
+
+    # filename = 'label_testing'
+    label_png_folder = 'labels_png_folder'
+    
+    plt.imsave(label_png_folder +  path_to_label[-36:] + '.png', label.astype('uint8'))
+
+
+def convert_all_labels_to_png(all_labels_path):
+    for path_to_label in Path(all_labels_path).ls():
+        path_to_label_str = str(path_to_label)
+        if path_to_label_str != 'data_all_labels/ref_landcovernet_v1_labels/.DS_Store':
+            convert_label_to_png(path_to_label_str)
