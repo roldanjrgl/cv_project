@@ -33,7 +33,7 @@ def main():
         data_path = 'data'
         # convert_source_to_png()
         # convert_all_labels_to_png(data_all_labels_path)
-        convert_labels_source_to_png(data_path)
+        convert_data_to_png(data_path)
 
     if plot:
         label_path = 'data/ref_landcovernet_v1_labels_38PKT_29/labels/38PKT_29_2018_LC_10m.tif'

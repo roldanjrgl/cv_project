@@ -28,18 +28,18 @@ def get_source_rgb(path_dict):
 #     filename = 'rbd_testing'
 #     plt.imsave(filename + '.png', rgb.astype('uint8'))
 
-def convert_source_to_png(data_in_path, data_out_path):
-    # refence_based_on: https://github.com/pavlo-seimskyi/semantic-segmentation-satellite-imagery/blob/main/download_data.ipynb
-    rgbnl = {}
-    for img in Path(data_in_path).ls(): 
-        print(img)
-        if re.search('.*0101_B04_10m.tif', str(img)) : rgbnl['red'] = img 
-        if re.search('.*0101_B03_10m.tif', str(img)) : rgbnl['green'] = img
-        if re.search('.*0101_B02_10m.tif', str(img)) : rgbnl['blue'] = img
-        if re.search('.*0101_B08_10m.tif', str(img)) : rgbnl['nir'] = img
-    rgb = get_source_rgb(rgbnl)
-    filename = 'rbd_testing'
-    plt.imsave(data_out_path + '.png', rgb.astype('uint8'))
+# def convert_source_to_png(data_in_path, data_out_path):
+#     # refence_based_on: https://github.com/pavlo-seimskyi/semantic-segmentation-satellite-imagery/blob/main/download_data.ipynb
+#     rgbnl = {}
+#     for img in Path(data_in_path).ls(): 
+#         print(img)
+#         if re.search('.*0101_B04_10m.tif', str(img)) : rgbnl['red'] = img 
+#         if re.search('.*0101_B03_10m.tif', str(img)) : rgbnl['green'] = img
+#         if re.search('.*0101_B02_10m.tif', str(img)) : rgbnl['blue'] = img
+#         if re.search('.*0101_B08_10m.tif', str(img)) : rgbnl['nir'] = img
+#     rgb = get_source_rgb(rgbnl)
+#     filename = 'rbd_testing'
+#     plt.imsave(data_out_path + '.png', rgb.astype('uint8'))
 
 
 def get_label(path_dict):
@@ -74,39 +74,61 @@ def convert_label_to_png(path_to_label):
     plt.imsave(label_png_folder +  path_to_label[-36:] + '.png', label)
 
 
+def convert_source_to_png(data_in_path, data_out_path):
+    rgbnl = {}
+    for img in Path(data_in_path).ls(): 
+        print(img)
+        if re.search('.*0101_B04_10m.tif', str(img)) : rgbnl['red'] = img 
+        if re.search('.*0101_B03_10m.tif', str(img)) : rgbnl['green'] = img
+        if re.search('.*0101_B02_10m.tif', str(img)) : rgbnl['blue'] = img
+        if re.search('.*0101_B08_10m.tif', str(img)) : rgbnl['nir'] = img
+    rgb = get_source_rgb(rgbnl)
+    filename = 'rbd_testing'
+    plt.imsave(data_out_path + '.png', rgb.astype('uint8'))
+
 def convert_all_labels_to_png(all_labels_path):
     for path_to_label in Path(all_labels_path).ls():
         path_to_label_str = str(path_to_label)
         if path_to_label_str != 'data_all_labels/ref_landcovernet_v1_labels/.DS_Store':
             convert_label_to_png(path_to_label_str)
 
+def classify_bands_for_one_image_chip(image_chip_path):
+    bands_for_image_chip_source_day = {}
 
-def convert_labels_source_to_png(data_path):
+    for source_day in Path(image_chip_path/f'source').ls():
+        source_day_name = str(source_day)[-29:-12]
+        band = str(source_day)[-11:-8]
+        # sample_source_day[source_day_name][band] = source_day
+        if (source_day_name in bands_for_image_chip_source_day.keys()):
+            bands_for_image_chip_source_day[source_day_name][band] = source_day
+        else:
+            bands_for_image_chip_source_day[source_day_name] = {}
+            bands_for_image_chip_source_day[source_day_name][band] = source_day
+        print(source_day)
+        print(source_day_name)
+        print(band)
+    
+    return bands_for_image_chip_source_day
+
+def convert_all_source_days_one_for_image_chip(bands_info):
+    pass
+
+
+def convert_data_to_png(data_path):
     # if folder for data_png doesn't exist, create one
     data_png_path = 'data_png'
     if os.path.isdir(data_png_path) == False:
         os.mkdir(data_png_path)
 
-    for sample_path in Path(data_path).ls():
-        sample_name = str(sample_path)[5:]
+    for image_chip_path in Path(data_path).ls():
+        sample_name = str(image_chip_path)[5:]
         # print(sample_path)
         # print(sample_path/f'source')
         # print(sample_path/f'labels')
         # convert_source_to_png(sample_path/f'source', data_png_path / sample_name / )
 
-        sample_source_day = {}
+        bands_for_image_chip_source_day = classify_bands_for_one_image_chip(image_chip_path)
+        convert_all_source_days_one_for_image_chip(bands_for_image_chip_source_day)
 
-        for source_day in Path(sample_path/f'source').ls():
-            source_day_name = str(source_day)[-29:-12]
-            band = str(source_day)[-11:-8]
-            # sample_source_day[source_day_name][band] = source_day
-            if (source_day_name in sample_source_day.keys()):
-                sample_source_day[source_day_name][band] = source_day
-            else:
-                sample_source_day[source_day_name] = {}
-                sample_source_day[source_day_name][band] = source_day
-            print(source_day)
-            print(source_day_name)
-            print(band)
 
     print('END OF FUNCT')
