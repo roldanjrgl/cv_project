@@ -34,9 +34,13 @@ def plot_label(label_path):
     image = src.read()
     show(image)
     image_norm = (image - image.min()) / (image.max() - image.min())
-    show(image_norm)
-    print(image_norm)
+    # show(image_norm)
+    # print(image_norm)
 
 
-label_path = 'data/ref_landcovernet_v1_labels_38PKT_28/source/38PKT_28_20180605_B04_10m.tif' 
-plot_label(label_path=label_path)
+labels = ['data/ref_landcovernet_v1_labels_38PKT_25/source/38PKT_25_20180605_B04_10m.tif','data/ref_landcovernet_v1_labels_38PKT_26/source/38PKT_26_20180605_B04_10m.tif',
+          'data/ref_landcovernet_v1_labels_38PKT_27/source/38PKT_27_20180605_B04_10m.tif' ,'data/ref_landcovernet_v1_labels_38PKT_28/source/38PKT_28_20180605_B04_10m.tif' ]
+
+for i in range(len(labels)):
+    label_path = labels[i]
+    plot_label(label_path=label_path)
