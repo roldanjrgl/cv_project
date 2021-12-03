@@ -15,11 +15,23 @@ def get_source_rgb(path_dict):
     rgb = ((rgb - rgb.min()) / (rgb.max() - rgb.min()) * 255).astype(int)
     return rgb
 
-def convert_source_to_png():
+# def convert_source_to_png(data_in_path, data_out_path):
+#     # refence_based_on: https://github.com/pavlo-seimskyi/semantic-segmentation-satellite-imagery/blob/main/download_data.ipynb
+#     rgbnl = {}
+#     for img in Path('data/ref_landcovernet_v1_labels_38PKT_29/source').ls(): 
+#         print(img)
+#         if re.search('.*0101_B04_10m.tif', str(img)) : rgbnl['red'] = img 
+#         if re.search('.*0101_B03_10m.tif', str(img)) : rgbnl['green'] = img
+#         if re.search('.*0101_B02_10m.tif', str(img)) : rgbnl['blue'] = img
+#         if re.search('.*0101_B08_10m.tif', str(img)) : rgbnl['nir'] = img
+#     rgb = get_source_rgb(rgbnl)
+#     filename = 'rbd_testing'
+#     plt.imsave(filename + '.png', rgb.astype('uint8'))
+
+def convert_source_to_png(data_in_path, data_out_path):
     # refence_based_on: https://github.com/pavlo-seimskyi/semantic-segmentation-satellite-imagery/blob/main/download_data.ipynb
     rgbnl = {}
-    # for loc in Path('data/ref_landcovernet_v1_labels_38PKT_25/source').ls(): 
-    for img in Path('data/ref_landcovernet_v1_labels_38PKT_29/source').ls(): 
+    for img in Path(data_in_path).ls(): 
         print(img)
         if re.search('.*0101_B04_10m.tif', str(img)) : rgbnl['red'] = img 
         if re.search('.*0101_B03_10m.tif', str(img)) : rgbnl['green'] = img
@@ -27,7 +39,7 @@ def convert_source_to_png():
         if re.search('.*0101_B08_10m.tif', str(img)) : rgbnl['nir'] = img
     rgb = get_source_rgb(rgbnl)
     filename = 'rbd_testing'
-    plt.imsave(filename + '.png', rgb.astype('uint8'))
+    plt.imsave(data_out_path + '.png', rgb.astype('uint8'))
 
 
 def get_label(path_dict):
@@ -67,3 +79,17 @@ def convert_all_labels_to_png(all_labels_path):
         path_to_label_str = str(path_to_label)
         if path_to_label_str != 'data_all_labels/ref_landcovernet_v1_labels/.DS_Store':
             convert_label_to_png(path_to_label_str)
+
+
+def convert_labels_source_to_png(data_path):
+    # if folder for data_png doesn't exist, create one
+    data_png_path = 'data_png'
+    if os.path.isdir(data_png_path) == False:
+        os.mkdir(data_png_path)
+
+    for sample_path in Path(data_path).ls():
+        sample_name = str(sample_path)[5:]
+        print(sample_path)
+        print(sample_path/f'source')
+        print(sample_path/f'labels')
+        # convert_source_to_png(sample_path/f'source', data_png_path / sample_name / )

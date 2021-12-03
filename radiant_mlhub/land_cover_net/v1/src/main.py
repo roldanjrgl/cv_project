@@ -8,8 +8,8 @@ from data_preprocessing import *
 from plot_images import *
 
 def main():
-    download = True
-    convert = False
+    download = False
+    convert = True
     plot = False
     print_collection_info = False
     # choose number of items you want to download
@@ -17,11 +17,10 @@ def main():
     data_all_labels_path = './data_all_labels/ref_landcovernet_v1_labels'
     collection_id = 'ref_landcovernet_v1_labels'
 
-    if print_collection_properties:
+    if print_collection_info:
         print_collection_properties(collection_id=collection_id)
         print_land_cover_labels(collection_id)
         
-
     if download:
         start = time.time()
         # items = get_items(collection_id,cloud_and_shadow=True, max_items=max_items)
@@ -31,9 +30,10 @@ def main():
         print(f'Time downloading = {end - start}')
 
     if convert:
+        data_path = 'data'
         # convert_source_to_png()
-        # convert_label_to_png()
-        convert_all_labels_to_png(data_all_labels_path)
+        # convert_all_labels_to_png(data_all_labels_path)
+        convert_labels_source_to_png(data_path)
 
     if plot:
         label_path = 'data/ref_landcovernet_v1_labels_38PKT_29/labels/38PKT_29_2018_LC_10m.tif'
