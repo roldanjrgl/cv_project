@@ -38,9 +38,9 @@ def plot_label(label_path):
     # print(image_norm)
 
 
-labels = ['data/ref_landcovernet_v1_labels_38PKT_25/source/38PKT_25_20180605_B04_10m.tif','data/ref_landcovernet_v1_labels_38PKT_26/source/38PKT_26_20180605_B04_10m.tif',
-          'data/ref_landcovernet_v1_labels_38PKT_27/source/38PKT_27_20180605_B04_10m.tif' ,'data/ref_landcovernet_v1_labels_38PKT_28/source/38PKT_28_20180605_B04_10m.tif' ]
+# labels = ['data/ref_landcovernet_v1_labels_38PKT_25/source/38PKT_25_20180605_B04_10m.tif','data/ref_landcovernet_v1_labels_38PKT_26/source/38PKT_26_20180605_B04_10m.tif',
+        #   'data/ref_landcovernet_v1_labels_38PKT_27/source/38PKT_27_20180605_B04_10m.tif' ,'data/ref_landcovernet_v1_labels_38PKT_28/source/38PKT_28_20180605_B04_10m.tif' ]
 
-for i in range(len(labels)):
-    label_path = labels[i]
-    plot_label(label_path=label_path)
+# for i in range(len(labels)):
+    # label_path = labels[i]
+    # plot_label(label_path=label_path)

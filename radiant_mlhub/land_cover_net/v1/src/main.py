@@ -15,17 +15,28 @@ from data_preprocessing import *
 from plot_images import *
 
 def main():
+    download = True
+    convert = False
+    plot = False
+
+
     collection_id = 'ref_landcovernet_v1_labels'
-    print_collection_properties(collection_id=collection_id)
-    print_land_cover_labels(collection_id)
+    # print_collection_properties(collection_id=collection_id)
+    # print_land_cover_labels(collection_id)
 
-    max_items = 5
-    items = get_items(collection_id, max_items=max_items)
-    # download_rgb_labels_and_source(items)
-    convert_images()
+    max_items = 1
+    items = get_items(collection_id,cloud_and_shadow=True, max_items=max_items)
 
-    label_path = 'data/ref_landcovernet_v1_labels_38PKT_25/labels/38PKT_25_2018_LC_10m.tif'
-    plot_label(label_path=label_path)
+    if download:
+        download_rgb_labels_and_source(items)
+
+    if convert:
+        convert_source_to_png()
+        convert_label()
+
+    if plot:
+        label_path = 'data/ref_landcovernet_v1_labels_38PKT_29/labels/38PKT_29_2018_LC_10m.tif'
+        plot_label(label_path=label_path)
 
 
 if __name__ == "__main__":
