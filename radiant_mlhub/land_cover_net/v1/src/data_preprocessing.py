@@ -89,7 +89,24 @@ def convert_labels_source_to_png(data_path):
 
     for sample_path in Path(data_path).ls():
         sample_name = str(sample_path)[5:]
-        print(sample_path)
-        print(sample_path/f'source')
-        print(sample_path/f'labels')
+        # print(sample_path)
+        # print(sample_path/f'source')
+        # print(sample_path/f'labels')
         # convert_source_to_png(sample_path/f'source', data_png_path / sample_name / )
+
+        sample_source_day = {}
+
+        for source_day in Path(sample_path/f'source').ls():
+            source_day_name = str(source_day)[-29:-12]
+            band = str(source_day)[-11:-8]
+            # sample_source_day[source_day_name][band] = source_day
+            if (source_day_name in sample_source_day.keys()):
+                sample_source_day[source_day_name][band] = source_day
+            else:
+                sample_source_day[source_day_name] = {}
+                sample_source_day[source_day_name][band] = source_day
+            print(source_day)
+            print(source_day_name)
+            print(band)
+
+    print('END OF FUNCT')
