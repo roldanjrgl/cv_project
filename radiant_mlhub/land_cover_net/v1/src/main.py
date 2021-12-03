@@ -18,13 +18,16 @@ def main():
     download = False
     convert = True
     plot = False
+    print_collection_info = False
 
     data_all_labels_path = './data_all_labels/ref_landcovernet_v1_labels'
 
     collection_id = 'ref_landcovernet_v1_labels'
-    # print_collection_properties(collection_id=collection_id)
-    # print_land_cover_labels(collection_id)
+    if print_collection_properties:
+        print_collection_properties(collection_id=collection_id)
+        print_land_cover_labels(collection_id)
 
+    # choose number of items you want to download
     max_items = 1
     items = get_items(collection_id,cloud_and_shadow=True, max_items=max_items)
 
