@@ -7,6 +7,7 @@ from PIL import Image
 import PIL
 
 import rasterio
+from rasterio.plot import show
 from matplotlib import pyplot
 
 # def plot_label(label_path):
@@ -29,12 +30,13 @@ from matplotlib import pyplot
 #     print(img_arr)
 
 def plot_label(label_path):
-    src = rasterio.open(label_path)    
-    src_read = src.read(1)
-    pyplot.imshow(src.read(1), cmap='Colormap')
-    pyplot.show()
+    src = rasterio.open(label_path)
+    image = src.read()
+    show(image)
+    image_norm = (image - image.min()) / (image.max() - image.min())
+    show(image_norm)
+    print(image_norm)
+
 
 label_path = 'data/ref_landcovernet_v1_labels_38PKT_28/source/38PKT_28_20180605_B04_10m.tif' 
-
 plot_label(label_path=label_path)
-
