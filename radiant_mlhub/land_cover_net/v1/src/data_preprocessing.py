@@ -1,5 +1,6 @@
 import numpy
 from fastai.vision.all import *
+from numpy.lib.utils import source
 import rasterio as rio
 import os 
 
@@ -74,17 +75,6 @@ def convert_label_to_png(path_to_label):
     plt.imsave(label_png_folder +  path_to_label[-36:] + '.png', label)
 
 
-def convert_source_to_png(data_in_path, data_out_path):
-    rgbnl = {}
-    for img in Path(data_in_path).ls(): 
-        print(img)
-        if re.search('.*0101_B04_10m.tif', str(img)) : rgbnl['red'] = img 
-        if re.search('.*0101_B03_10m.tif', str(img)) : rgbnl['green'] = img
-        if re.search('.*0101_B02_10m.tif', str(img)) : rgbnl['blue'] = img
-        if re.search('.*0101_B08_10m.tif', str(img)) : rgbnl['nir'] = img
-    rgb = get_source_rgb(rgbnl)
-    filename = 'rbd_testing'
-    plt.imsave(data_out_path + '.png', rgb.astype('uint8'))
 
 def convert_all_labels_to_png(all_labels_path):
     for path_to_label in Path(all_labels_path).ls():
@@ -110,11 +100,27 @@ def classify_bands_for_one_image_chip(image_chip_path):
     
     return bands_for_image_chip_source_day
 
-def convert_all_source_days_for_image_chip(bands_for_image_chip_source_day):
 
+def convert_source_to_png(source_day, bands, source_day_dir):
+    red = rio.open(bands['B04']).read(1) 
+    green = rio.open(bands['B03']).read(1) 
+    blue = rio.open(bands['B02']).read(1) 
+    
+    rgb = np.dstack((red, green, blue))
+    rgb = ((rgb - rgb.min()) / (rgb.max() - rgb.min()) * 255).astype(int)
+    plt.imsave(source_day_dir + '/' +  source_day + '.png', rgb.astype('uint8'))
+
+
+def convert_all_source_days_for_image_chip(bands_for_image_chip_source_day, data_png_path):
     for source_day, bands  in bands_for_image_chip_source_day.items():
         print(source_day)
         print(bands)
+
+        source_day_dir = data_png_path + '/' + source_day[:8]
+        if os.path.isdir(source_day_dir) == False:
+            os.mkdir(source_day_dir)
+
+        convert_source_to_png(source_day, bands, source_day_dir)
 
 
 def convert_data_to_png(data_path):
@@ -131,7 +137,7 @@ def convert_data_to_png(data_path):
         # convert_source_to_png(sample_path/f'source', data_png_path / sample_name / )
 
         bands_for_image_chip_source_day = classify_bands_for_one_image_chip(image_chip_path)
-        convert_all_source_days_for_image_chip(bands_for_image_chip_source_day)
+        convert_all_source_days_for_image_chip(bands_for_image_chip_source_day, data_png_path)
 
 
     print('END OF FUNCT')
