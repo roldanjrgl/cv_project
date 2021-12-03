@@ -15,23 +15,21 @@ from data_preprocessing import *
 from plot_images import *
 
 def main():
-    download = False
-    convert = True
+    download = True
+    convert = False
     plot = False
     print_collection_info = False
-
+    # choose number of items you want to download
+    max_items = 1
     data_all_labels_path = './data_all_labels/ref_landcovernet_v1_labels'
-
     collection_id = 'ref_landcovernet_v1_labels'
+
     if print_collection_properties:
         print_collection_properties(collection_id=collection_id)
         print_land_cover_labels(collection_id)
 
-    # choose number of items you want to download
-    max_items = 1
-    items = get_items(collection_id,cloud_and_shadow=True, max_items=max_items)
-
     if download:
+        items = get_items(collection_id,cloud_and_shadow=True, max_items=max_items)
         download_rgb_labels_and_source(items)
 
     if convert:
