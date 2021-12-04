@@ -82,9 +82,10 @@ def convert_all_labels_to_png(all_labels_path):
         if path_to_label_str != 'data_all_labels/ref_landcovernet_v1_labels/.DS_Store':
             convert_label_to_png(path_to_label_str)
 
-def classify_bands_for_one_image_chip(image_chip_path):
-    bands_for_image_chip_source_day = {}
 
+def classify_bands_for_one_image_chip(image_chip_path):
+    # classify source images
+    bands_for_image_chip_source_day = {}
     for source_day in Path(image_chip_path/f'source').ls():
         source_day_name = str(source_day)[-29:-12]
         band = str(source_day)[-11:-8]
@@ -97,8 +98,14 @@ def classify_bands_for_one_image_chip(image_chip_path):
         print(source_day)
         print(source_day_name)
         print(band)
-    
-    return bands_for_image_chip_source_day
+
+    # classify labels 
+    bands_for_image_chip_labels = {}
+    for label_path in Path(image_chip_path/f'labels').ls():
+        label_name = str(source_day)[-29:-21]
+        bands_for_image_chip_labels[label_name] = label_path
+
+    return bands_for_image_chip_source_day, bands_for_image_chip_labels
 
 
 def convert_source_to_png(source_day, bands, source_day_dir):
@@ -119,8 +126,40 @@ def convert_all_source_days_for_image_chip(bands_for_image_chip_source_day, data
         source_day_dir = data_png_path + '/' + source_day[:8]
         if os.path.isdir(source_day_dir) == False:
             os.mkdir(source_day_dir)
+        
+        # source_day_dir.append('/source')
+        source_day_dir  = source_day_dir + '/source'
+        if os.path.isdir(source_day_dir) == False:
+            os.mkdir(source_day_dir)
 
         convert_source_to_png(source_day, bands, source_day_dir)
+
+
+def convert_label_to_png(label, bands, label_dir):
+    channel = rio.open(str(bands)).read(1)
+
+    channel_normalized = ((channel - channel.min()) / (channel.max() - channel.min()) * 255).astype(int)
+    plt.imsave(label_dir + '/' +  label + '.png', channel_normalized.astype('uint8'))
+
+
+
+
+def convert_all_labels_for_image_chip(bands_for_image_chip_labels, data_png_path):
+    bands_for_image_chip_labels
+    for label, bands in bands_for_image_chip_labels.items():
+        print(label)
+        print(bands)
+
+        label_dir = data_png_path + '/' + label[:8]
+        # label_dir = data_png_path + '/label'
+        if os.path.isdir(label_dir) == False:
+            os.mkdir(label_dir)
+
+        label_dir = label_dir + '/label'
+        if os.path.isdir(label_dir) == False:
+            os.mkdir(label_dir)
+
+        convert_label_to_png(label, bands, label_dir)
 
 
 def convert_data_to_png(data_path):
@@ -136,8 +175,9 @@ def convert_data_to_png(data_path):
         # print(sample_path/f'labels')
         # convert_source_to_png(sample_path/f'source', data_png_path / sample_name / )
 
-        bands_for_image_chip_source_day = classify_bands_for_one_image_chip(image_chip_path)
+        bands_for_image_chip_source_day, bands_for_image_chip_labels = classify_bands_for_one_image_chip(image_chip_path)
         convert_all_source_days_for_image_chip(bands_for_image_chip_source_day, data_png_path)
+        convert_all_labels_for_image_chip(bands_for_image_chip_labels, data_png_path)
 
 
     print('END OF FUNCT')
