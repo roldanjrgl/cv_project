@@ -4,19 +4,6 @@ import rasterio as rio
 import numpy as np
 from fastai.vision.all import *
 
-def convert_source_to_png(data_source_path, name):
-    source = rio.open(data_source_path)
-    red = source.read(4)
-    green = source.read(3)
-    blue = source.read(2)
-    # red = source.read(5)
-    # green = source.read(6)
-    # blue = source.read(7)
-
-    rgb = np.dstack((red, green, blue))
-    rgb = ((rgb - rgb.min()) / (rgb.max() - rgb.min()) * 255).astype(int)
-    # plt.imsave(source_day_dir + '/' +  source_day + '.png', rgb.astype('uint8'))
-    plt.imsave(name + '.png', rgb.astype('uint8'))
 
 def convert_label_to_png(image_chip_label_path, image_chip_label_name, image_chip_name, data_png_path):
     label = rio.open(image_chip_label_path)
@@ -49,3 +36,32 @@ def convert_all_labels_to_png(all_labels_path):
 
         image_chip_label_path = all_labels_path + '/' + image_chip_label_name + '/labels.tif'
         convert_label_to_png(image_chip_label_path, image_chip_label_name, image_chip_name, data_png_path)
+
+
+def convert_source_to_png(data_source_path, name):
+    source = rio.open(data_source_path)
+    red = source.read(4)
+    green = source.read(3)
+    blue = source.read(2)
+
+    rgb = np.dstack((red, green, blue))
+    rgb = ((rgb - rgb.min()) / (rgb.max() - rgb.min()) * 255).astype(int)
+    # plt.imsave(source_day_dir + '/' +  source_day + '.png', rgb.astype('uint8'))
+    plt.imsave(name + '.png', rgb.astype('uint8'))
+
+
+def convert_all_sources_to_png(all_sources_path):
+    data_png_path = '../data_png'
+
+    if os.path.isdir(data_png_path) == False:
+        os.mkdir(data_png_path)
+    
+    for image_chip_path in Path(all_sources_path).ls():
+        print(image_chip_path)
+        image_chip_source_name = str(image_chip_path)[-50:]
+        print(image_chip_source_name)
+
+        image_chip_name = image_chip_source_name[:-11]
+        print(image_chip_name)
+        image_chip_name = image_chip_name[:-17] + image_chip_name[-7:]
+        print(image_chip_name)
