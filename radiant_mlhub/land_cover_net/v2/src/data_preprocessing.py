@@ -71,5 +71,21 @@ def convert_all_sources_to_png(all_source_path):
         convert_all_source_days_for_image_chip(bands_for_image_chip_source_day, data_png_path)
 
 def convert_all_labels_to_png(all_labels_path):
-    pass
+    data_png_path = '../data_png'
+
+    if os.path.isdir(data_png_path) == False:
+        os.mkdir(data_png_path)
+    
+    for image_chip_path in Path(data_png_path).ls():
+        print(image_chip_path)
+        image_chip_name = str(image_chip_path)[-8:]
+        print(image_chip_name)
+
+        image_chip_label_name = all_labels_path.split('/')[2] + '_' + image_chip_name
+        print(image_chip_label_name)
+        
+        image_chip_label_path =  all_labels_path + '/' + image_chip_label_name + '/' + 'labels.tif'
+        print(image_chip_label_path)
+
+        
 
