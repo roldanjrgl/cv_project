@@ -70,6 +70,20 @@ def convert_all_sources_to_png(all_source_path):
         bands_for_image_chip_source_day = classify_bands_for_one_image_chip(image_chip_path)
         convert_all_source_days_for_image_chip(bands_for_image_chip_source_day, data_png_path)
 
+def convert_label_to_png(image_chip_label_path, data_png_path, image_chip_name):
+    label = rio.open(image_chip_label_path)
+    band1 = label.read(1) 
+
+    save_to_path = data_png_path + '/' + image_chip_name
+    if os.path.isdir(save_to_path) == False:
+        os.mkdir(save_to_path)
+
+    save_to_path = save_to_path + '/labels/'
+    if os.path.isdir(save_to_path) == False:
+        os.mkdir(save_to_path)
+
+    plt.imsave(save_to_path + 'labels' + '.png', band1.astype('uint8'))
+
 def convert_all_labels_to_png(all_labels_path):
     data_png_path = '../data_png'
 
@@ -86,6 +100,10 @@ def convert_all_labels_to_png(all_labels_path):
         
         image_chip_label_path =  all_labels_path + '/' + image_chip_label_name + '/' + 'labels.tif'
         print(image_chip_label_path)
+
+        convert_label_to_png(image_chip_label_path, data_png_path, image_chip_name)
+
+        
 
         
 
