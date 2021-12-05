@@ -83,8 +83,50 @@ def convert_all_sources_to_png(all_source_path):
 #         os.mkdir(save_to_path)
 
 #     plt.imsave(save_to_path + 'labels' + '.png', band1.astype('uint8'))
-def convert_mask_to_rgb():
-    pass
+def convert_mask_to_rgb(mask):
+    class_to_rgb = {
+             0: (0,0,0),
+             1: (0,0,255),
+             2: (136, 136, 136),
+             3: (209,164,109),
+             4: (245,245,255),
+             5: (214,76,43),
+             6: (24, 104, 24),
+             7: (0, 255, 0)}    
+
+    red = np.zeros_like(mask)
+    green = np.zeros_like(mask)
+    blue = np.zeros_like(mask)
+    
+    # red = np.where(mask == 0, class_to_rgb[0][0], 0)
+    # green = np.where(mask == 0, class_to_rgb[0][1], 0)
+    # blue = np.where(mask == 0, class_to_rgb[0][2], 0)
+
+    # red = np.where(mask == 6, class_to_rgb[6][0], 0)
+    # green = np.where(mask == 6, class_to_rgb[6][1], 0)
+    # blue = np.where(mask == 6, class_to_rgb[6][2], 0)
+
+    num_classes = 8
+    # print(class_to_rgb[class_idx][0])
+    # for class_idx in range(num_classes):
+    #     red = np.where(mask == class_idx, class_to_rgb[class_idx][0], -1)
+    #     green = np.where(mask == class_idx, class_to_rgb[class_idx][1], -1)
+    #     blue = np.where(mask == class_idx, class_to_rgb[class_idx][2], -1)
+    h, w = mask.shape[0], mask.shape[1]
+    for row in range(h):
+        for col in range(w):
+            for class_idx in range(num_classes):
+                if mask[row][col] == class_idx:
+                    red[row][col] = class_to_rgb[class_idx][0]
+                    green[row][col] = class_to_rgb[class_idx][1]
+                    blue[row][col] = class_to_rgb[class_idx][2]
+            
+
+    rgb = np.dstack((red, green, blue))
+    return rgb
+
+
+
 
 def convert_mask_and_consensus_to_png(image_chip_label_path, data_png_path, image_chip_name):
     label = rio.open(image_chip_label_path)
@@ -99,9 +141,11 @@ def convert_mask_and_consensus_to_png(image_chip_label_path, data_png_path, imag
     if os.path.isdir(save_to_path) == False:
         os.mkdir(save_to_path)
 
-    # convert_mask_to_rgb()
+    mask_rgb = convert_mask_to_rgb(mask)
 
-    plt.imsave(save_to_path + 'labels' + '.png', mask.astype('uint8'))
+    # plt.imsave(save_to_path + 'labels' + '.png', mask.astype('uint8'))
+    plt.imsave(save_to_path + 'labels' + '.png', mask_rgb.astype('uint8'))
+    # plt.imsave('rbg_labels' + '.png', mask_rgb.astype('uint8'))
     plt.imsave(save_to_path + 'consensus' + '.png', consensus.astype('uint8'))
 
 def convert_all_labels_to_png(all_labels_path):
