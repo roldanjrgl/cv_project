@@ -38,16 +38,39 @@ def convert_all_labels_to_png(all_labels_path):
         convert_label_to_png(image_chip_label_path, image_chip_label_name, image_chip_name, data_png_path)
 
 
-def convert_source_to_png(data_source_path, name):
-    source = rio.open(data_source_path)
+# def convert_source_to_png(data_source_path, name):
+#     source = rio.open(data_source_path)
+#     red = source.read(4)
+#     green = source.read(3)
+#     blue = source.read(2)
+
+#     rgb = np.dstack((red, green, blue))
+#     rgb = ((rgb - rgb.min()) / (rgb.max() - rgb.min()) * 255).astype(int)
+#     # plt.imsave(source_day_dir + '/' +  source_day + '.png', rgb.astype('uint8'))
+#     plt.imsave(name + '.png', rgb.astype('uint8'))
+
+def convert_source_to_png(image_chip_source_path, image_chip_source_name, image_chip_name, data_png_path):
+    source = rio.open(image_chip_source_path)
     red = source.read(4)
     green = source.read(3)
     blue = source.read(2)
 
     rgb = np.dstack((red, green, blue))
     rgb = ((rgb - rgb.min()) / (rgb.max() - rgb.min()) * 255).astype(int)
-    # plt.imsave(source_day_dir + '/' +  source_day + '.png', rgb.astype('uint8'))
-    plt.imsave(name + '.png', rgb.astype('uint8'))
+
+    save_to_path = data_png_path + '/' + image_chip_name
+    if os.path.isdir(save_to_path) == False:
+        os.mkdir(save_to_path)
+
+    save_to_path = save_to_path + '/source'
+    if os.path.isdir(save_to_path) == False:
+        os.mkdir(save_to_path)
+
+    save_to_path = save_to_path + '/' + image_chip_source_name + '/'
+    if os.path.isdir(save_to_path) == False:
+        os.mkdir(save_to_path)
+
+    plt.imsave(save_to_path + 'source' + '.png', rgb.astype('uint8'))
 
 
 def convert_all_sources_to_png(all_sources_path):
@@ -65,3 +88,8 @@ def convert_all_sources_to_png(all_sources_path):
         print(image_chip_name)
         image_chip_name = image_chip_name[:-17] + image_chip_name[-7:]
         print(image_chip_name)
+
+        image_chip_source_path = all_sources_path + '/' + image_chip_source_name + '/source.tif'
+        print(image_chip_source_path)
+
+        convert_source_to_png(image_chip_source_path, image_chip_source_name, image_chip_name, data_png_path)
