@@ -5,9 +5,14 @@ import rasterio as rio
 import os 
 
 def convert_source_to_png(source_day, bands, source_day_dir):
-    red = rio.open(bands['B04']).read(1) 
-    green = rio.open(bands['B03']).read(1) 
-    blue = rio.open(bands['B02']).read(1) 
+    # all_rgb_bands =  ('B04' in bands) and ('BO3' in bands) and ('BO2' in bands)
+    all_rgb_bands =  'B04' in bands and 'B03' in bands and 'B02' in bands 
+    if all_rgb_bands:
+        red = rio.open(bands['B04']).read(1) 
+        green = rio.open(bands['B03']).read(1) 
+        blue = rio.open(bands['B02']).read(1) 
+    else:
+        return
     
     rgb = np.dstack((red, green, blue))
     rgb = ((rgb - rgb.min()) / (rgb.max() - rgb.min()) * 255).astype(int)
