@@ -125,7 +125,7 @@ def convert_mask_and_consensus_to_png(image_chip_label_path, data_png_path, imag
     mask_rgb = convert_mask_to_rgb(mask)
 
     plt.imsave(save_to_path + 'labels' + '.png', mask.astype('uint8'))
-    plt.imsave(save_to_path + 'labels_rgb' + '.png', mask_rgb.astype('uint8'))
+    plt.imsave(save_to_path + 'mask' + '.png', mask_rgb.astype('uint8'))
     plt.imsave(save_to_path + 'consensus' + '.png', consensus.astype('uint8'))
 
 def convert_all_labels_to_png(all_labels_path):
