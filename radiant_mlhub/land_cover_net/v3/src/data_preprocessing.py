@@ -35,12 +35,10 @@ def convert_all_source_days_for_image_chip(bands_for_image_chip_source_day, data
         convert_source_to_png(source_day, bands, source_day_dir)
 
 def classify_bands_for_one_image_chip(image_chip_path):
-    # classify source images
     bands_for_image_chip_source_day = {}
     for source_day in Path(image_chip_path/f'source').ls():
         source_day_name = str(source_day)[-29:-12]
         band = str(source_day)[-11:-8]
-        # sample_source_day[source_day_name][band] = source_day
         if (source_day_name in bands_for_image_chip_source_day.keys()):
             bands_for_image_chip_source_day[source_day_name][band] = source_day
         else:
@@ -49,12 +47,6 @@ def classify_bands_for_one_image_chip(image_chip_path):
         print(source_day)
         print(source_day_name)
         print(band)
-
-    # classify labels 
-    # bands_for_image_chip_labels = {}
-    # for label_path in Path(image_chip_path/f'labels').ls():
-    #     label_name = str(source_day)[-29:-21]
-    #     bands_for_image_chip_labels[label_name] = label_path
 
     return bands_for_image_chip_source_day
 
@@ -83,6 +75,7 @@ def convert_all_sources_to_png(all_source_path):
 #         os.mkdir(save_to_path)
 
 #     plt.imsave(save_to_path + 'labels' + '.png', band1.astype('uint8'))
+
 def convert_mask_to_rgb(mask):
     class_to_rgb = {
              0: (0,0,0),
@@ -98,20 +91,8 @@ def convert_mask_to_rgb(mask):
     green = np.zeros_like(mask)
     blue = np.zeros_like(mask)
     
-    # red = np.where(mask == 0, class_to_rgb[0][0], 0)
-    # green = np.where(mask == 0, class_to_rgb[0][1], 0)
-    # blue = np.where(mask == 0, class_to_rgb[0][2], 0)
-
-    # red = np.where(mask == 6, class_to_rgb[6][0], 0)
-    # green = np.where(mask == 6, class_to_rgb[6][1], 0)
-    # blue = np.where(mask == 6, class_to_rgb[6][2], 0)
 
     num_classes = 8
-    # print(class_to_rgb[class_idx][0])
-    # for class_idx in range(num_classes):
-    #     red = np.where(mask == class_idx, class_to_rgb[class_idx][0], -1)
-    #     green = np.where(mask == class_idx, class_to_rgb[class_idx][1], -1)
-    #     blue = np.where(mask == class_idx, class_to_rgb[class_idx][2], -1)
     h, w = mask.shape[0], mask.shape[1]
     for row in range(h):
         for col in range(w):
@@ -145,7 +126,6 @@ def convert_mask_and_consensus_to_png(image_chip_label_path, data_png_path, imag
 
     plt.imsave(save_to_path + 'labels' + '.png', mask.astype('uint8'))
     plt.imsave(save_to_path + 'labels_rgb' + '.png', mask_rgb.astype('uint8'))
-    # plt.imsave('rbg_labels' + '.png', mask_rgb.astype('uint8'))
     plt.imsave(save_to_path + 'consensus' + '.png', consensus.astype('uint8'))
 
 def convert_all_labels_to_png(all_labels_path):
