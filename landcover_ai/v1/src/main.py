@@ -1,12 +1,13 @@
 import numpy as np
 from fastai.vision.all import *
 from numpy.lib.utils import source
-# import rasterio as rio
+import rasterio as rio
 import os 
-import cv2
+# import cv2
 import matplotlib.pyplot as plt
+from PIL import Image
 
-def convert_mask_to_rgb(mask):
+def convert_mask_to_rgb(mask, output_masks_rgb):
     # class_to_rgb = {
     #          0: (80,0,165),
     #          1: (255,204,0),
@@ -33,14 +34,29 @@ def convert_mask_to_rgb(mask):
                     red[row][col] = class_to_rgb[class_idx][0]
                     green[row][col] = class_to_rgb[class_idx][1]
                     blue[row][col] = class_to_rgb[class_idx][2]
+        
             
 
     rgb = np.dstack((red, green, blue))
     return rgb
 
-def convert_all_masks_to_png(all_masks_path):
-    for image_chip_path in Path(data_png_path).ls():
-        print(image_chip_path)
+def convert_all_masks_to_png(all_masks_path, output_masks_rgb):
+    if os.path.isdir(output_masks_rgb) == False:
+        os.mkdir(output_masks_rgb)
+
+    for image_chip_path in Path(all_masks_path).ls():
+        file_type = str(image_chip_path)[-6:]
+        if (file_type == '_m.png'):
+            print(image_chip_path)
+            print(str(image_chip_path).split('/')[-1])
+            image_chip_name = str(image_chip_path).split('/')[-1]
+
+
+            mask = rio.open(str(image_chip_path)).read(1)
+            mask_rgb = convert_mask_to_rgb(mask, output_masks_rgb)
+            plt.imsave(output_masks_rgb + '/' + image_chip_name, mask_rgb.astype('uint8'))
+
+
 
 
 def main():
@@ -50,16 +66,21 @@ def main():
     # plt.imsave('labels' + '.png', mask.astype('uint8'))
 
     # example
-    label_path = 'M-33-20-D-c-4-2_0_m.png'
-    img = cv2.imread(label_path,0)
-    print('END OF FILE')
-    mask_rgb = convert_mask_to_rgb(img)
+    # label_path = 'M-33-20-D-c-4-2_0_m.png'
+    # img = cv2.imread(label_path,0)
+    # img = Image.open(label_path)
+    # img = open(label_path,'rb').read()
 
-    plt.imsave('mask_rgb' + '.png', mask_rgb.astype('uint8'))
+    # dataset = rio.open(label_path) 
+    # print(dataset.index)
+    # img = rio.open(label_path).read()
+    # print('END OF FILE')
+    # mask_rgb = convert_mask_to_rgb(img)
+    # plt.imsave('mask_rgb' + '.png', mask_rgb.astype('uint8'))
 
-    #
-    # all_masks_path = '../../../../data_sources/landcover.ai.v1/output'
-    # convert_all_masks_to_png(all_masks_path)
+    all_masks_path = '../../../../data_sources/landcover.ai.v1/output'
+    output_masks_rgb = 'masks_rgb'
+    convert_all_masks_to_png(all_masks_path, output_masks_rgb)
 
 
 
