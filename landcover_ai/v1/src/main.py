@@ -26,16 +26,26 @@ def convert_mask_to_rgb(mask, output_masks_rgb):
     blue = np.zeros_like(mask)
     
     num_classes = 4
-    h, w = mask.shape[0], mask.shape[1]
-    for row in range(h):
-        for col in range(w):
-            for class_idx in range(1, num_classes + 1):
-                if mask[row][col] == class_idx:
-                    red[row][col] = class_to_rgb[class_idx][0]
-                    green[row][col] = class_to_rgb[class_idx][1]
-                    blue[row][col] = class_to_rgb[class_idx][2]
-        
-            
+    # h, w = mask.shape[0], mask.shape[1]
+    # for row in range(h):
+    #     for col in range(w):
+    #         for class_idx in range(1, num_classes + 1):
+    #             if mask[row][col] == class_idx:
+    #                 red[row][col] = class_to_rgb[class_idx][0]
+    #                 green[row][col] = class_to_rgb[class_idx][1]
+    #                 blue[row][col] = class_to_rgb[class_idx][2]
+
+
+    # class_idx = 1
+    for class_idx in range(1, num_classes + 1):
+        red_temp = np.where(mask == class_idx, class_to_rgb[class_idx][0], 0)
+        green_temp = np.where(mask == class_idx, class_to_rgb[class_idx][1], 0)
+        blue_temp = np.where(mask == class_idx, class_to_rgb[class_idx][2], 0)
+
+        red = np.where(red_temp > 0, red_temp, red)
+        green = np.where(green_temp > 0, green_temp, green)
+        blue = np.where(blue_temp > 0, blue_temp, blue)
+
 
     rgb = np.dstack((red, green, blue))
     return rgb
