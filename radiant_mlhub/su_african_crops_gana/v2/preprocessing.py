@@ -4,7 +4,7 @@ import rasterio as rio
 import numpy as np
 from fastai.vision.all import *
 
-def convert_mask_to_rgb(mask, output_masks_rgb):
+def convert_mask_to_rgb(mask):
     # class_to_rgb = {
     #          0: (80,0,165),
     #          1: (255,204,0),
@@ -46,7 +46,7 @@ def convert_mask_to_rgb(mask, output_masks_rgb):
     
     num_classes = 25
 
-    for class_idx in range(0, num_classes + 1):
+    for class_idx in range(0, num_classes):
         red_temp = np.where(mask == class_idx, class_to_rgb[class_idx][0], 0)
         green_temp = np.where(mask == class_idx, class_to_rgb[class_idx][1], 0)
         blue_temp = np.where(mask == class_idx, class_to_rgb[class_idx][2], 0)
