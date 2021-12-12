@@ -129,6 +129,20 @@ def convert_source_to_png(image_chip_source_path, image_chip_source_name, image_
     plt.imsave(save_to_path + 'source' + '.png', rgb.astype('uint8'))
 
 
+def check_image_with_no_clouds(image_chip_cloudmask_path):
+    label = rio.open(image_chip_cloudmask_path)
+    band1 = label.read(1) 
+    non_zero_pixels = np.count_nonzero(band1)
+    print(non_zero_pixels)
+    max_pixels_with_clouds = 100
+
+    if (non_zero_pixels < max_pixels_with_clouds):
+        return True 
+    else:
+        return False 
+
+
+
 def convert_all_sources_to_png(all_sources_path):
     data_png_path = '../data_png'
 
@@ -149,5 +163,9 @@ def convert_all_sources_to_png(all_sources_path):
         print(image_chip_source_path)
 
         # todo: check for clouds using cloudmask.tif here!
+        image_chip_cloudmask_path = all_sources_path + '/' + image_chip_source_name + '/cloudmask.tif'
+        image_with_no_clouds = check_image_with_no_clouds(image_chip_cloudmask_path)
+        print(image_chip_cloudmask_path)
 
-        convert_source_to_png(image_chip_source_path, image_chip_source_name, image_chip_name, data_png_path)
+        if (image_with_no_clouds):
+            convert_source_to_png(image_chip_source_path, image_chip_source_name, image_chip_name, data_png_path)
